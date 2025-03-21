@@ -1,9 +1,9 @@
 #include <WiFi.h>
 
-const char* ssid = "Olgu"; 
-const char* password = "olguay3k";
+const char* ssid = "wifiadıgir"; 
+const char* password = "wifişifregir";
 const int ledPin = 2; //ledin bulunduğu pin
-const char* otherEspIp = "172.20.10.4"; //haberleştirilecek olan esp32 kartının ip'si
+const char* otherEspIp = "haberleşecekolanespipgir"; //haberleştirilecek olan esp32 kartının ip'si
 
 WiFiServer server(80); //sanal bir haberleşme portu
 
