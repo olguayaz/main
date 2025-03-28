@@ -1,67 +1,63 @@
 #include <WiFi.h>
 
-const char* ssid = "wifiadıgir"; 
-const char* password = "wifişifregir";
-const int ledPin = 2; //ledin bulunduğu pin
-const char* otherEspIp = "haberleşecekolanespipgir"; //haberleştirilecek olan esp32 kartının ip'si
+const char* ssid = "wifiadi"; 
+const char* password = "wifisifre";
+const int ledPin = 2; // LED'in bulundugu pin
+const char* otherEspIp = "haberlesecekolanespip"; // Haberlesilecek olan ESP32 kartinin IP'si
 
-WiFiServer server(80); //sanal bir haberleşme portu
+WiFiServer server(80); // Sanal bir haberlesme portu
 
 void setup() {
-  pinMode(ledPin, OUTPUT); //ledin çıkış olduğunu tanımladım
-  Serial.begin(115200);  //haberleşme hızı
-  WiFi.begin(ssid, password); //wifi bilgileri
+  pinMode(ledPin, OUTPUT); // LED'in cikis oldugunu tanimladim
+  Serial.begin(115200);  // Haberlesme hizi
+  WiFi.begin(ssid, password); // WiFi bilgileri
 
-  while (WiFi.status() != WL_CONNECTED) { //wifi'a bağlanma şartı 
+  while (WiFi.status() != WL_CONNECTED) { // WiFi'a baglanma sarti 
     delay(500);
-    Serial.println("WiFi'a bağlanıyor...");
+    Serial.println("WiFi'a baglaniyor...");
   }
 
-  Serial.println("WiFi'a bağlandı.");
+  Serial.println("WiFi'a baglandi.");
   Serial.print("ESP IP'si: ");
-  Serial.println(WiFi.localIP()); //bağlı olan esp'nin ip'si
+  Serial.println(WiFi.localIP()); // Bagli olan ESP'nin IP'si
 
   server.begin();
 }
 
 void loop() {
-  // İstemci olarak mesaj gönderme
-  if (Serial.available() > 0) {    //eğer veri akışı olursa döndür
-    String message = Serial.readStringUntil('\n'); /değişken tanıtımı
-    WiFiClient client;  //espler arası bağlantı 
-    if (client.connect(otherEspIp, 80)) { //esp ip'si ve portu uyuyorsa döndür
-      client.println(message);  //veriyi al
-      Serial.print("Gönderilen Mesaj: ");
-      Serial.println(message);  monitöre yaz
+  // Istemci olarak mesaj gonderme
+  if (Serial.available() > 0) {    // Eger veri akisi olursa döndür
+    String message = Serial.readStringUntil('\n'); // Degisken tanitimi
+    WiFiClient client;  // ESP'ler arasi baglanti 
+    if (client.connect(otherEspIp, 80)) { // ESP IP'si ve portu uyuyorsa döndür
+      client.println(message);  // Veriyi al
+      Serial.print("Gonderilen Mesaj: ");
+      Serial.println(message);  // Monitöre yaz
     } else {
-      Serial.println("Bağlantı hatası");
+      Serial.println("Baglanti hatasi");
     }
     client.stop();
   }
 
   // Sunucu olarak mesaj alma
-  WiFiClient client = server.available();  //haberleşme var mı kontrol
+  WiFiClient client = server.available();  // Haberlesme var mi kontrol et
   
-  if (client) {  //bağlantı varsa döndür
-   
-    String message = client.readStringUntil('\n');   //değişken tanımı
-    message.trim();    //gelen verinin sağındaki solundaki boşlukları al
+  if (client) {  // Baglanti varsa döndür
+    String message = client.readStringUntil('\n');   // Degisken tanimi
+    message.trim();    // Gelen verinin sagindaki solundaki bosluklari al
     
-    if (message == "ledyak") {    //ledyak stringi gelirse döndür
+    if (message == "ledyak") {    // LED YAK stringi gelirse döndür
       digitalWrite(ledPin, HIGH);
       Serial.println("LED YAKILDI");
     }
-    else if (message == "ledsön") {    //ledsön stringi gelirse döndür
-      // Eğer message değişkeni "selam" ise
+    else if (message == "ledson") {    // LED SÖN stringi gelirse döndür
+      // Eger message degiskeni "selam" ise
       digitalWrite(ledPin, LOW);
-        Serial.println("LED SÖNDÜRÜLDÜ");
-     } 
-
-else{
-      Serial.print("!!!!!!!!!Tanımlanmayan veri: ");
+      Serial.println("LED SONDURULDU");
+    } 
+    else{
+      Serial.print("!!!!!!!!!Tanimlanmayan veri: ");
       Serial.println(message);
     }
-    
   }
-  
 }
